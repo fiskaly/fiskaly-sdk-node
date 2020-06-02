@@ -1,0 +1,21 @@
+{
+  "name": "fiskaly-sdk-node-example",
+  "version": "1.0.0",
+  "description": "Fiskaly Cloud-TSE SDK for Node.js - Example usage",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fiskaly",
+    "sdk",
+    "node",
+    "example"
+  ],
+  "author": "fiskaly",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "fiskaly-sdk-node": "^1.1.600"
+  }
+}
