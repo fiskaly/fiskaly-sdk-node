@@ -11,7 +11,7 @@ The fiskaly SDK includes an HTTP client that is needed<sup>[1](#fn1)</sup> for a
 - [X] Automatic authentication handling (fetch/refresh JWT and re-authenticate upon 401 errors).
 - [X] Automatic retries on failures (server errors or network timeouts/issues).
 - [ ] Automatic JSON parsing and serialization of request and response bodies.
-- [X] Future: [<a name="fn1">1</a>] compliance regarding [BSI CC-PP-0105-2019](https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Zertifizierung/Reporte/ReportePP/pp0105b_pdf.pdf?__blob=publicationFile&v=7) which mandates a locally executed SMA component for creating signed log messages. 
+- [X] Future: [<a name="fn1">1</a>] compliance regarding [BSI CC-PP-0105-2019](https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Zertifizierung/Reporte/ReportePP/pp0105b_pdf.pdf?__blob=publicationFile&v=7) which mandates a locally executed SMA component for creating signed log messages.
 - [ ] Future: Automatic offline-handling (collection and documentation according to [Anwendungserlass zu § 146a AO](https://www.bundesfinanzministerium.de/Content/DE/Downloads/BMF_Schreiben/Weitere_Steuerthemen/Abgabenordnung/AO-Anwendungserlass/2019-06-17-einfuehrung-paragraf-146a-AO-anwendungserlass-zu-paragraf-146a-AO.pdf?__blob=publicationFile&v=1))
 
 ## Integration
@@ -32,12 +32,12 @@ Or you can manually add the package to your `package.json` file:
 
 ```json
 "dependencies": {
-    "fiskaly-sdk-node": "*"
+  "fiskaly-sdk-node": "*"
 }
 ```
-then run 
-```bash 
-$ npm install 
+then run
+```bash
+$ npm install
 ```
 
 Finally, be sure to include the sdk in your code:
@@ -59,20 +59,20 @@ Additionally, to the SDK, you'll also need the fiskaly service. Follow these ste
 ### Demo
 
 ```javascript
- // Environment variables
-  const { FISKALY_SERVICE_URL, FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL } = process.env;
- 
-  try {
-    // Client Setup
-    const client = new FiskalyClient(FISKALY_SERVICE_URL);
-    await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
+// Environment variables
+const { FISKALY_SERVICE_URL, FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL } = process.env;
 
-    const version = await client.getVersion();
-    console.log("Version", version);
-  } catch (e) {
-  	// Handle Error
-    console.error(e);
-  }
+try {
+  // Client Setup
+  const client = new FiskalyClient(FISKALY_SERVICE_URL);
+  await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
+
+  const version = await client.getVersion();
+  console.log("Version", version);
+} catch (e) {
+  // Handle Error
+  console.error(e);
+}
 ```
 
 ### Client Configuration
@@ -87,16 +87,16 @@ The following code snippet demonstrates how to enable the debug mode in the clie
 
 ```javascript
 try {
- const configParams = {
+  const configParams = {
     debug_level: 4,
     debug_file: __dirname + '/../fiskaly.log',
     client_timeout: 5000,
     smaers_timeout: 2000,
-}
-const newConfig = await client.configure(configParams);
+  }
+  const newConfig = await client.configure(configParams);
 } catch (e) {
-	// Handle Error
-    console.error(e);
+  // Handle Error
+  console.error(e);
 }
 ````
 
