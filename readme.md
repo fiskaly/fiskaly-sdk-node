@@ -95,7 +95,7 @@ try {
   }
   const newConfig = await client.configure(configParams);
 } catch (e) {
-	// Handle Error
+  // Handle Error
   console.error(e);
 }
 ````
