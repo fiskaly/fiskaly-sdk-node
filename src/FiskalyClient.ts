@@ -2,23 +2,33 @@ import * as jayson from 'jayson/promise';
 import { ClientConfiguration, VersionResponse, RequestResponse } from './responses';
 import { FiskalyErrorHandler, FiskalyError } from "./errors";
 import { ConfigureMethodParams, RequestMethodParams } from "./interfaces";
+import { ClientLibrary } from "./client/ClientLibrary";
 
 export class FiskalyClient {
     private readonly SDK_VERSION = '1.1.600';
     private context: string | undefined;
-    private readonly jsonRPC: jayson.Client;
+    private jsonRPC: jayson.Client | undefined;
+    private clientLibrary: ClientLibrary | undefined;
+    private hasService: boolean = true;
     private readonly allowedMethods = ['create-context', 'version', 'config', 'request', 'echo'];
 
     /**
      * Fiskaly Client Constructor.
-     * @param {string} fiskalyServiceUrl
+     * If fiskalyServiceUrl parameter not provided, the client library will be loaded from 'client' folder
+     * @param {string} fiskalyServiceUrl | optional
      */
     constructor(fiskalyServiceUrl: string) {
         if (!fiskalyServiceUrl) {
-            throw new FiskalyError("fiskalyServiceUrl must be provided");
+            try {
+                this.clientLibrary = new ClientLibrary();
+                this.hasService = false;
+            } catch (e) {
+                throw new FiskalyError("fiskalyServiceUrl must be provided");
+            }
+        } else {
+            // @ts-ignore
+            this.jsonRPC = jayson.Client.http(fiskalyServiceUrl);
         }
-        // @ts-ignore
-        this.jsonRPC = jayson.Client.http(fiskalyServiceUrl);
     }
 
     /**
@@ -30,11 +40,25 @@ export class FiskalyClient {
         if(!this.allowedMethods.includes(method)) {
             throw new FiskalyError("Invalid method parameter");
         }
-        const response = await this.jsonRPC.request(method, params);
-        /** Check if error exists */
-        if (response.error != null) {
-            throw FiskalyErrorHandler.throwError(response);
+        let response = null;
+        if (this.hasService) {
+            // Service request
+            // @ts-ignore
+            response = await this.jsonRPC.request(method, params);
+            /** Check if error exists */
+            if (response.error != null) {
+                throw FiskalyErrorHandler.throwError(response);
+            }
+        } else {
+            // Client Library request
+            // @ts-ignore
+            response = await this.clientLibrary?.request(method, params)
+            // @ts-ignore
+            if (response.error != null) {
+                throw FiskalyErrorHandler.throwError(response);
+            }
         }
+
         return response
     }
 

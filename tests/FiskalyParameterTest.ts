@@ -10,13 +10,6 @@ beforeEach(() => {
     FISKALY_BASE_URL= 'https://kassensichv.io/api/v1';
 })
 
-test('Constructor parameter test', async () => {
-    let setup = function () {
-        const client = new FiskalyClient('');
-    }
-    expect(setup).toThrow('fiskalyServiceUrl must be provided');
-});
-
 test('Create context method apiKey parameter test', async () => {
     const client = new FiskalyClient(FISKALY_SERVICE_URL);
 

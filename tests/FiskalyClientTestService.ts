@@ -23,6 +23,7 @@ test('Test get version request', async () => {
     expect(version).toBeInstanceOf(VersionResponse);
 });
 
+
 test('Test create context request', async () => {
     const client = new FiskalyClient(FISKALY_SERVICE_URL);
     let initialContext = client.getContext();
@@ -84,12 +85,4 @@ test('Test request method', async () => {
     }
 
     await expect(client.request(requestParams)).rejects.toBeInstanceOf(FiskalyHttpError);
-
-
-    /*
-    await client.request(requestParams);
-    expect(response).not.toBeNull();
-    expect(response).not.toBeUndefined();
-    expect(response).toBeInstanceOf(RequestResponse);
-    */
 })
