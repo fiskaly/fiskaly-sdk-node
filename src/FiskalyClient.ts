@@ -27,7 +27,7 @@ export class FiskalyClient {
         } else {
             // @ts-ignore
             const rpc = jayson.Client.http(fiskalyServiceUrl);
-            this.doRequest = rpc.request.bind(rpc);
+            this.doRequestFn = rpc.request.bind(rpc);
         }
     }
 
