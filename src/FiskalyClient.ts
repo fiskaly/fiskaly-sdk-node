@@ -56,11 +56,6 @@ export class FiskalyClient {
             'sdk_version': this.SDK_VERSION
         };
         const response = await this.doRequest('create-context', contextParams);
-        /** Check if error exists */
-        if (response.error != null) {
-            throw FiskalyErrorHandler.throwError(response);
-        }
-        // @ts-ignore
         this.updateContext(response.result.context);
     }
 
