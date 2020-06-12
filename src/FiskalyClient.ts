@@ -81,10 +81,6 @@ export class FiskalyClient {
      */
     public async getVersion(): Promise<VersionResponse> {
         const response = await this.doRequest('version', {});
-        /** Check if error exists */
-        if (response.error != null) {
-            throw FiskalyErrorHandler.throwError(response);
-        }
         const client = response.result.client;
         const smaers = response.result.smaers;
 
