@@ -3,6 +3,7 @@ import * as ffi from "ffi-napi";
 // @ts-ignore
 import * as ref from "ref-napi";
 import {FiskalyError} from "../errors";
+import * as path from "path";
 
 export class ClientLibrary {
     private readonly LIB_PREFIX: string = "com.fiskaly.client";
@@ -17,7 +18,7 @@ export class ClientLibrary {
      */
     constructor() {
         try {
-            this.library = ffi.Library(`${__dirname}\\${this.getLibraryName()}`, {
+            this.library = ffi.Library(path.join(__dirname, '/' + this.getLibraryName()), {
                 _fiskaly_client_invoke: ['char *', ['char *']],
                 _fiskaly_client_free: ['void', ['char *']],
             })
