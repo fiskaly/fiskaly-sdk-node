@@ -9,9 +9,6 @@ export class FiskalyClient {
     private readonly SDK_VERSION = '1.1.600';
     private context: string | undefined;
     private readonly doRequestFn: OmitThisParameter<(method: string, params: object) => Promise<JSONRPCResultLike> | null> = () => null;
-    private jsonRPC: jayson.Client | undefined;
-    private clientLibrary: ClientLibrary | undefined;
-    private hasService: boolean = true;
     private readonly allowedMethods = ['create-context', 'version', 'config', 'request', 'echo'];
 
     /**
