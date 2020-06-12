@@ -100,10 +100,6 @@ export class FiskalyClient {
             context: this.context
         };
         const response = await this.doRequest('config', params);
-        /** Check if error exists */
-        if (response.error != null) {
-            throw FiskalyErrorHandler.throwError(response);
-        }
         const config = response.result.config;
         return new ClientConfiguration(config.debug_level, config.debug_file, config.client_timeout, config.smaers_timeout);
     }
