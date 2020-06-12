@@ -3,10 +3,12 @@ import { ClientConfiguration, VersionResponse, RequestResponse } from './respons
 import { FiskalyErrorHandler, FiskalyError } from "./errors";
 import { ConfigureMethodParams, RequestMethodParams } from "./interfaces";
 import { ClientLibrary } from "./client/ClientLibrary";
+import {JSONRPCResultLike} from "jayson/promise";
 
 export class FiskalyClient {
     private readonly SDK_VERSION = '1.1.600';
     private context: string | undefined;
+    private readonly doRequest: OmitThisParameter<(method: string, params: object) => Promise<JSONRPCResultLike> | null> = () => null;
     private jsonRPC: jayson.Client | undefined;
     private clientLibrary: ClientLibrary | undefined;
     private hasService: boolean = true;
@@ -26,41 +28,12 @@ export class FiskalyClient {
                 throw new FiskalyError("fiskalyServiceUrl must be provided");
             }
         } else {
+            // @ts-ignore
             const rpc = jayson.Client.http(fiskalyServiceUrl);
             this.doRequest = rpc.request.bind(rpc);
         }
     }
 
-    /**
-     * Send JSON RPC Request to Client
-     * @param {string} method
-     * @param {object} params
-     */
-    private async doRequest(method: string, params: object) {
-        if(!this.allowedMethods.includes(method)) {
-            throw new FiskalyError("Invalid method parameter");
-        }
-        let response = null;
-        if (this.hasService) {
-            // Service request
-            // @ts-ignore
-            response = await this.jsonRPC.request(method, params);
-            /** Check if error exists */
-            if (response.error != null) {
-                throw FiskalyErrorHandler.throwError(response);
-            }
-        } else {
-            // Client Library request
-            // @ts-ignore
-            response = await this.clientLibrary?.request(method, params)
-            // @ts-ignore
-            if (response.error != null) {
-                throw FiskalyErrorHandler.throwError(response);
-            }
-        }
-
-        return response
-    }
 
     /**
      * Create context
@@ -86,8 +59,11 @@ export class FiskalyClient {
             'sdk_version': this.SDK_VERSION
         };
         const response = await this.doRequest('create-context', contextParams);
-
-        /** Update context */
+        /** Check if error exists */
+        if (response.error != null) {
+            throw FiskalyErrorHandler.throwError(response);
+        }
+        // @ts-ignore
         this.updateContext(response.result.context);
     }
 
@@ -113,7 +89,10 @@ export class FiskalyClient {
      */
     public async getVersion(): Promise<VersionResponse> {
         const response = await this.doRequest('version', {});
-
+        /** Check if error exists */
+        if (response.error != null) {
+            throw FiskalyErrorHandler.throwError(response);
+        }
         const client = response.result.client;
         const smaers = response.result.smaers;
 
@@ -129,7 +108,10 @@ export class FiskalyClient {
             context: this.context
         };
         const response = await this.doRequest('config', params);
-
+        /** Check if error exists */
+        if (response.error != null) {
+            throw FiskalyErrorHandler.throwError(response);
+        }
         const config = response.result.config;
         return new ClientConfiguration(config.debug_level, config.debug_file, config.client_timeout, config.smaers_timeout);
     }
@@ -144,6 +126,10 @@ export class FiskalyClient {
             context: this.context
         };
         const response = await this.doRequest('config', params);
+        /** Check if error exists */
+        if (response.error != null) {
+            throw FiskalyErrorHandler.throwError(response);
+        }
 
         /** Update context */
         this.updateContext(response.result.context);
@@ -162,7 +148,9 @@ export class FiskalyClient {
             context: this.context
         };
         const response = await this.doRequest('request', params);
-
+        if (response.error != null) {
+            throw FiskalyErrorHandler.throwError(response);
+        }
         const requestResponse = new RequestResponse(response.result.response, response.result.context);
 
         /** Update context */
