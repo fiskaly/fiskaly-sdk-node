@@ -20,7 +20,7 @@ export class FiskalyClient {
         if (!fiskalyServiceUrl) {
             try {
                 const lib = new ClientLibrary();
-                this.doRequest = lib.request.bind(lib);
+                this.doRequestFn = lib.request.bind(lib);
             } catch (e) {
                 throw new FiskalyError("fiskalyServiceUrl must be provided");
             }
