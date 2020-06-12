@@ -114,10 +114,6 @@ export class FiskalyClient {
             context: this.context
         };
         const response = await this.doRequest('config', params);
-        /** Check if error exists */
-        if (response.error != null) {
-            throw FiskalyErrorHandler.throwError(response);
-        }
 
         /** Update context */
         this.updateContext(response.result.context);
