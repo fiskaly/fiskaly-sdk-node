@@ -136,9 +136,6 @@ export class FiskalyClient {
             context: this.context
         };
         const response = await this.doRequest('request', params);
-        if (response.error != null) {
-            throw FiskalyErrorHandler.throwError(response);
-        }
         const requestResponse = new RequestResponse(response.result.response, response.result.context);
 
         /** Update context */
