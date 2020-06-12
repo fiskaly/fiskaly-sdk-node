@@ -31,6 +31,22 @@ export class FiskalyClient {
         }
     }
 
+    /**
+     * Send JSON RPC Request to Client
+     * @param {string} method
+     * @param {object} params
+     */
+    private async doRequest(method: string, params: object) {
+        if(!this.allowedMethods.includes(method)) {
+            throw new FiskalyError("Invalid method parameter");
+        }
+        const response = await this.doRequestFn(method, params);
+        /** Check if error exists */
+        if (response.error != null) {
+            throw FiskalyErrorHandler.throwError(response);
+        }
+        return response
+    }
 
     /**
      * Create context
