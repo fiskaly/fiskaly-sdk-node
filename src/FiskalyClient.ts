@@ -20,14 +20,14 @@ export class FiskalyClient {
     constructor(fiskalyServiceUrl: string) {
         if (!fiskalyServiceUrl) {
             try {
-                this.clientLibrary = new ClientLibrary();
-                this.hasService = false;
+                const lib = new ClientLibrary();
+                this.doRequest = lib.request.bind(lib);
             } catch (e) {
                 throw new FiskalyError("fiskalyServiceUrl must be provided");
             }
         } else {
-            // @ts-ignore
-            this.jsonRPC = jayson.Client.http(fiskalyServiceUrl);
+            const rpc = jayson.Client.http(fiskalyServiceUrl);
+            this.doRequest = rpc.request.bind(rpc);
         }
     }
 
