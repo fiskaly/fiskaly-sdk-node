@@ -12,7 +12,7 @@ beforeEach(() => {
     FISKALY_SERVICE_URL = null;
     FISKALY_API_KEY = process.env.FISKALY_API_KEY || '';
     FISKALY_API_SECRET= process.env.FISKALY_API_SECRET || '';
-    FISKALY_BASE_URL= 'https://kassensichv.io/api/v1';
+    FISKALY_BASE_URL = process.env.FISKALY_BASE_URL || '';
 })
 
 test('Fiskaly Client Constructor', async () => {

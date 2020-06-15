@@ -6,10 +6,10 @@ dotenv.config();
 let FISKALY_SERVICE_URL: string, FISKALY_API_KEY: string, FISKALY_API_SECRET: string, FISKALY_BASE_URL: string;
 
 beforeEach(() => {
-    FISKALY_SERVICE_URL = 'http://localhost:8080/invoke';
+    FISKALY_SERVICE_URL = process.env.FISKALY_SERVICE_URL || '';
     FISKALY_API_KEY = process.env.FISKALY_API_KEY || '';
     FISKALY_API_SECRET= process.env.FISKALY_API_SECRET || '';
-    FISKALY_BASE_URL= 'https://kassensichv.io/api/v1';
+    FISKALY_BASE_URL = process.env.FISKALY_BASE_URL || '';
 })
 
 test('Create context method apiKey parameter test', async () => {
