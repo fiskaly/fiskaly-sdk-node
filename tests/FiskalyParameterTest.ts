@@ -1,12 +1,14 @@
 import { FiskalyClient } from '../src/';
 import { FiskalyError } from "../src/errors";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 let FISKALY_SERVICE_URL: string, FISKALY_API_KEY: string, FISKALY_API_SECRET: string, FISKALY_BASE_URL: string;
 
 beforeEach(() => {
     FISKALY_SERVICE_URL = 'http://localhost:8080/invoke';
-    FISKALY_API_KEY = 'test_9b92hretadf7nbl9gotci0188_development';
-    FISKALY_API_SECRET= '2ZJ8CPxnwSSx1f9EcwgxmiXo5HauyigGEb1dJh9ZvdH';
+    FISKALY_API_KEY = process.env.FISKALY_API_KEY || '';
+    FISKALY_API_SECRET= process.env.FISKALY_API_SECRET || '';
     FISKALY_BASE_URL= 'https://kassensichv.io/api/v1';
 })
 
