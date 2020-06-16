@@ -1,13 +1,13 @@
 import * as jayson from 'jayson/promise';
-import { ClientConfiguration, VersionResponse, RequestResponse } from './responses';
+import { ClientConfiguration, VersionResponse, RequestResponse, SelfTestResponse } from './responses';
 import { FiskalyErrorHandler, FiskalyError } from "./errors";
 import { ConfigureMethodParams, RequestMethodParams } from "./interfaces";
 
 export class FiskalyClient {
-    private readonly SDK_VERSION = '1.1.600';
+    private readonly SDK_VERSION = '1.2.000';
     private context: string | undefined;
     private readonly jsonRPC: jayson.Client;
-    private readonly allowedMethods = ['create-context', 'version', 'config', 'request', 'echo'];
+    private readonly allowedMethods = ['create-context', 'version', 'self-test', 'config', 'request', 'echo'];
 
     /**
      * Fiskaly Client Constructor.
@@ -97,6 +97,23 @@ export class FiskalyClient {
     }
 
     /**
+     * SelfTest - checks for connection to the backend and proxies
+     * @return Promise
+     */
+    public async selfTest(): Promise<SelfTestResponse> {
+        const params = {
+            context: this.context
+        };
+        const response = await this.doRequest('self-test', params);
+
+        const proxy = response.result.proxy;
+        const backend = response.result.backend;
+        const smaers = response.result.smaers;
+
+        return new SelfTestResponse(proxy, backend, smaers);
+    }
+
+    /**
      * Get fiskaly client configuration
      * @return Promise
      */
@@ -107,7 +124,7 @@ export class FiskalyClient {
         const response = await this.doRequest('config', params);
 
         const config = response.result.config;
-        return new ClientConfiguration(config.debug_level, config.debug_file, config.client_timeout, config.smaers_timeout);
+        return new ClientConfiguration(config.debug_level, config.debug_file, config.client_timeout, config.smaers_timeout, config.http_proxy);
     }
 
     /**
@@ -125,7 +142,7 @@ export class FiskalyClient {
         this.updateContext(response.result.context);
 
         const config = response.result.config;
-        return new ClientConfiguration(config.debug_level, config.debug_file, config.client_timeout, config.smaers_timeout);
+        return new ClientConfiguration(config.debug_level, config.debug_file, config.client_timeout, config.smaers_timeout, config.http_proxy);
     }
 
     /**

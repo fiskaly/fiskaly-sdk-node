@@ -1,6 +1,7 @@
 import { FiskalyClient } from '../src/';
 import { ClientConfiguration, VersionResponse, RequestResponse } from "../src/responses/";
 import { FiskalyHttpError } from "../src/errors";
+import { SelfTestResponse } from '../src/responses/SelfTestResponse';
 
 let FISKALY_SERVICE_URL: string, FISKALY_API_KEY: string, FISKALY_API_SECRET: string, FISKALY_BASE_URL: string;
 
@@ -21,6 +22,15 @@ test('Test get version request', async () => {
     const version = await client.getVersion();
     expect(version).not.toBeNull();
     expect(version).toBeInstanceOf(VersionResponse);
+});
+
+test('Test self-test request', async () => {
+    const client = new FiskalyClient(FISKALY_SERVICE_URL);
+    await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
+
+    const selftest = await client.selfTest();
+    expect(selftest).not.toBeNull();
+    expect(selftest).toBeInstanceOf(SelfTestResponse);
 });
 
 test('Test create context request', async () => {
@@ -84,7 +94,6 @@ test('Test request method', async () => {
     }
 
     await expect(client.request(requestParams)).rejects.toBeInstanceOf(FiskalyHttpError);
-
 
     /*
     await client.request(requestParams);
