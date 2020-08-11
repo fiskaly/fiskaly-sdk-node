@@ -16,8 +16,10 @@ export class FiskalyClient {
      * If fiskalyServiceUrl parameter not provided, the client library will be loaded from 'client' folder
      * @param {string} fiskalyServiceUrl | optional
      */
-    constructor(fiskalyServiceUrl?: string) {
-        if (!fiskalyServiceUrl) {
+    constructor(fiskalyServiceUrl?: string, requestFunction?: (method: string, params: object) => Promise<JSONRPCResultLike>) {
+        if (requestFunction) {
+            this.doRequestFn = requestFunction;
+        } else if (!fiskalyServiceUrl) {
             try {
                 const lib = new ClientLibrary();
                 this.doRequestFn = lib.request.bind(lib);
