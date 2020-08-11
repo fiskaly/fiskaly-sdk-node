@@ -4,12 +4,11 @@ import * as ffi from "ffi-napi";
 import * as ref from "ref-napi";
 import {FiskalyError} from "../errors";
 import * as path from "path";
+import { version } from '../../package.json';
 
 export class ClientLibrary {
     private readonly LIB_PREFIX: string = "com.fiskaly.client";
-    private readonly LIB_VERSION: string = 'v1.1.600';
-    private readonly HTTP_ERROR: number = -20000;
-    private readonly HTTP_TIMEOUT_ERROR: number = -21000;
+    private readonly LIB_VERSION: string = 'v' + version.slice(0, -2) + '00';
 
     private library: ffi.Library = null;
 
@@ -108,7 +107,7 @@ export class ClientLibrary {
                 extension = "dll";
                 break;
             case 'linux':
-                extension = "os";
+                extension = "so";
                 break;
             case 'darwin':
                 extension = "dylib";

@@ -4,9 +4,9 @@ import { FiskalyErrorHandler, FiskalyError } from "./errors";
 import { ConfigureMethodParams, RequestMethodParams } from "./interfaces";
 import { ClientLibrary } from "./client/ClientLibrary";
 import {JSONRPCResultLike} from "jayson/promise";
+import { version } from '../package.json';
 
 export class FiskalyClient {
-    private readonly SDK_VERSION = '1.2.000';
     private context: string | undefined;
     private readonly doRequestFn: OmitThisParameter<(method: string, params: object) => Promise<JSONRPCResultLike> | null> = () => null;
     private readonly allowedMethods = ['create-context', 'version', 'self-test', 'config', 'request', 'echo'];
@@ -16,7 +16,7 @@ export class FiskalyClient {
      * If fiskalyServiceUrl parameter not provided, the client library will be loaded from 'client' folder
      * @param {string} fiskalyServiceUrl | optional
      */
-    constructor(fiskalyServiceUrl: string) {
+    constructor(fiskalyServiceUrl?: string) {
         if (!fiskalyServiceUrl) {
             try {
                 const lib = new ClientLibrary();
@@ -69,7 +69,7 @@ export class FiskalyClient {
             'base_url': baseUrl,
             'api_key': apiKey,
             'api_secret': apiSecret,
-            'sdk_version': this.SDK_VERSION
+            'sdk_version': version
         };
         const response = await this.doRequest('create-context', contextParams);
         this.updateContext(response.result.context);

@@ -53,7 +53,7 @@ test('Test configure method', async () => {
 
     const configParams = {
         debug_level: 4,
-        debug_file: __dirname + '/../fiskaly.log',
+        debug_file: '-',
         client_timeout: 5000,
         smaers_timeout: 2000,
     }

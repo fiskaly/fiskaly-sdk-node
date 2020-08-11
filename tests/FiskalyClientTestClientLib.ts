@@ -17,19 +17,19 @@ beforeEach(() => {
 })
 
 test('Fiskaly Client Constructor', async () => {
-    const client = new FiskalyClient(FISKALY_SERVICE_URL);
+    const client = new FiskalyClient();
     expect(client).not.toBeNull();
 });
 
 test('Test get version request', async () => {
-    const client = new FiskalyClient(FISKALY_SERVICE_URL);
+    const client = new FiskalyClient();
     const version = await client.getVersion();
     expect(version).not.toBeNull();
     expect(version).toBeInstanceOf(VersionResponse);
 });
 
 test('Test self-test request', async () => {
-    const client = new FiskalyClient(FISKALY_SERVICE_URL);
+    const client = new FiskalyClient();
     await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
 
     const selftest = await client.selfTest();
@@ -38,7 +38,7 @@ test('Test self-test request', async () => {
 });
 
 test('Test create context request', async () => {
-    const client = new FiskalyClient(FISKALY_SERVICE_URL);
+    const client = new FiskalyClient();
     let initialContext = client.getContext();
     expect(initialContext).toBeUndefined();
 
@@ -53,7 +53,7 @@ test('Test create context request', async () => {
 });
 
 test('Test configure method', async () => {
-    const client = new FiskalyClient(FISKALY_SERVICE_URL);
+    const client = new FiskalyClient();
     await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
 
     const config = await client.getConfig();
@@ -82,7 +82,7 @@ test('Test configure method', async () => {
 
 
 test('Test request method', async () => {
-    const client = new FiskalyClient(FISKALY_SERVICE_URL);
+    const client = new FiskalyClient();
     await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
 
     const requestParams = {
