@@ -2,23 +2,33 @@ import * as jayson from 'jayson/promise';
 import { ClientConfiguration, VersionResponse, RequestResponse, SelfTestResponse } from './responses';
 import { FiskalyErrorHandler, FiskalyError } from "./errors";
 import { ConfigureMethodParams, RequestMethodParams } from "./interfaces";
+import { ClientLibrary } from "./client/ClientLibrary";
+import {JSONRPCResultLike} from "jayson/promise";
+import { version } from '../package.json';
 
 export class FiskalyClient {
-    private readonly SDK_VERSION = '1.2.000';
     private context: string | undefined;
-    private readonly jsonRPC: jayson.Client;
+    private readonly doRequestFn: OmitThisParameter<(method: string, params: object) => Promise<JSONRPCResultLike> | null> = () => null;
     private readonly allowedMethods = ['create-context', 'version', 'self-test', 'config', 'request', 'echo'];
 
     /**
      * Fiskaly Client Constructor.
-     * @param {string} fiskalyServiceUrl
+     * If fiskalyServiceUrl parameter not provided, the client library will be loaded from 'client' folder
+     * @param {string} fiskalyServiceUrl | optional
      */
-    constructor(fiskalyServiceUrl: string) {
+    constructor(fiskalyServiceUrl?: string) {
         if (!fiskalyServiceUrl) {
-            throw new FiskalyError("fiskalyServiceUrl must be provided");
+            try {
+                const lib = new ClientLibrary();
+                this.doRequestFn = lib.request.bind(lib);
+            } catch (e) {
+                throw new FiskalyError("fiskalyServiceUrl must be provided");
+            }
+        } else {
+            // @ts-ignore
+            const rpc = jayson.Client.http(fiskalyServiceUrl);
+            this.doRequestFn = rpc.request.bind(rpc);
         }
-        // @ts-ignore
-        this.jsonRPC = jayson.Client.http(fiskalyServiceUrl);
     }
 
     /**
@@ -30,7 +40,7 @@ export class FiskalyClient {
         if(!this.allowedMethods.includes(method)) {
             throw new FiskalyError("Invalid method parameter");
         }
-        const response = await this.jsonRPC.request(method, params);
+        const response = await this.doRequestFn(method, params);
         /** Check if error exists */
         if (response.error != null) {
             throw FiskalyErrorHandler.throwError(response);
@@ -59,11 +69,9 @@ export class FiskalyClient {
             'base_url': baseUrl,
             'api_key': apiKey,
             'api_secret': apiSecret,
-            'sdk_version': this.SDK_VERSION
+            'sdk_version': version
         };
         const response = await this.doRequest('create-context', contextParams);
-
-        /** Update context */
         this.updateContext(response.result.context);
     }
 
@@ -89,7 +97,6 @@ export class FiskalyClient {
      */
     public async getVersion(): Promise<VersionResponse> {
         const response = await this.doRequest('version', {});
-
         const client = response.result.client;
         const smaers = response.result.smaers;
 
@@ -122,7 +129,6 @@ export class FiskalyClient {
             context: this.context
         };
         const response = await this.doRequest('config', params);
-
         const config = response.result.config;
         return new ClientConfiguration(config.debug_level, config.debug_file, config.client_timeout, config.smaers_timeout, config.http_proxy);
     }
@@ -155,7 +161,6 @@ export class FiskalyClient {
             context: this.context
         };
         const response = await this.doRequest('request', params);
-
         const requestResponse = new RequestResponse(response.result.response, response.result.context);
 
         /** Update context */

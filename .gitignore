@@ -2,7 +2,12 @@
 **/node_modules
 .env
 .DS_Store
+
+# Service & Client Libs
 com.fiskaly.service*
+*.dll
+*.so
+*.dylib
 
 # Lock files
 yarn.lock

@@ -54,7 +54,17 @@ Additionally, to the SDK, you'll also need the fiskaly service. Follow these ste
 2. Download the appropriate service build for your platform
 3. Start the service
 
-## Usage
+### Client
+
+Additionally to the service, Node SDK, support also fiskaly client. 
+The client library is used if your constructor parameter "fiskalyServiceUrl" is not provided.
+
+Follow these steps to integrate it into your project:
+1. Go to [https://developer.fiskaly.com/downloads#client](https://developer.fiskaly.com/downloads/#client)
+2. Download the appropriate client library for your platform
+3. Move it to node_modules/fiskaly-sdk-node/lib/client/ directory
+
+## SDK Usage
 
 ### Demo
 
@@ -63,7 +73,7 @@ Additionally, to the SDK, you'll also need the fiskaly service. Follow these ste
 const { FISKALY_SERVICE_URL, FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL } = process.env;
 
 try {
-  // Client Setup
+  // SDK Setup
   const client = new FiskalyClient(FISKALY_SERVICE_URL);
   await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
 

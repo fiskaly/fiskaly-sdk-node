@@ -32,6 +32,7 @@
   "homepage": "https://github.com/fiskaly/fiskaly-sdk-node#readme",
   "devDependencies": {
     "@types/jest": "^25.2.3",
+    "dotenv": "^8.2.0",
     "jest": "^26.0.1",
     "ts-jest": "^26.0.0",
     "typescript": "^3.9.3"
@@ -40,6 +41,8 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "jayson": "^3.3.0"
+    "ffi-napi": "^3.0.1",
+    "jayson": "^3.3.0",
+    "ref-napi": "^2.0.2"
   }
 }

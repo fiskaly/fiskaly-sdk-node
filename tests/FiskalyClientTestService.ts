@@ -1,15 +1,16 @@
 import { FiskalyClient } from '../src/';
-import { ClientConfiguration, VersionResponse, RequestResponse } from "../src/responses/";
+import { ClientConfiguration, VersionResponse } from "../src/responses/";
 import { FiskalyHttpError } from "../src/errors";
-import { SelfTestResponse } from '../src/responses/SelfTestResponse';
+import * as dotenv from 'dotenv';
+dotenv.config()
 
 let FISKALY_SERVICE_URL: string, FISKALY_API_KEY: string, FISKALY_API_SECRET: string, FISKALY_BASE_URL: string;
 
 beforeEach(() => {
-    FISKALY_SERVICE_URL = 'http://localhost:8080/invoke';
-    FISKALY_API_KEY = 'test_9b92hretadf7nbl9gotci0188_development';
-    FISKALY_API_SECRET= '2ZJ8CPxnwSSx1f9EcwgxmiXo5HauyigGEb1dJh9ZvdH';
-    FISKALY_BASE_URL= 'https://kassensichv.io/api/v1';
+    FISKALY_SERVICE_URL = process.env.FISKALY_SERVICE_URL || '';
+    FISKALY_API_KEY = process.env.FISKALY_API_KEY || '';
+    FISKALY_API_SECRET= process.env.FISKALY_API_SECRET || '';
+    FISKALY_BASE_URL = process.env.FISKALY_BASE_URL || '';
 })
 
 test('Fiskaly Client Constructor', async () => {
@@ -24,14 +25,6 @@ test('Test get version request', async () => {
     expect(version).toBeInstanceOf(VersionResponse);
 });
 
-test('Test self-test request', async () => {
-    const client = new FiskalyClient(FISKALY_SERVICE_URL);
-    await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
-
-    const selftest = await client.selfTest();
-    expect(selftest).not.toBeNull();
-    expect(selftest).toBeInstanceOf(SelfTestResponse);
-});
 
 test('Test create context request', async () => {
     const client = new FiskalyClient(FISKALY_SERVICE_URL);
@@ -60,7 +53,7 @@ test('Test configure method', async () => {
 
     const configParams = {
         debug_level: 4,
-        debug_file: __dirname + '/../fiskaly.log',
+        debug_file: '-',
         client_timeout: 5000,
         smaers_timeout: 2000,
     }
@@ -94,11 +87,4 @@ test('Test request method', async () => {
     }
 
     await expect(client.request(requestParams)).rejects.toBeInstanceOf(FiskalyHttpError);
-
-    /*
-    await client.request(requestParams);
-    expect(response).not.toBeNull();
-    expect(response).not.toBeUndefined();
-    expect(response).toBeInstanceOf(RequestResponse);
-    */
 })
