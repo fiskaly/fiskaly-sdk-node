@@ -91,7 +91,7 @@ export class ClientLibrary {
      * @return {string}
      */
     private getLibraryName(): string {
-        return `${this.LIB_PREFIX}-${ClientLibrary.osPlatform()}-${ClientLibrary.osArch()}-${this.LIB_VERSION}.${ClientLibrary.getLibraryExtension()}`;
+        return `${ClientLibrary.getLibraryPrefix()}${this.LIB_PREFIX}-${ClientLibrary.osPlatform()}-${ClientLibrary.osArch()}-${this.LIB_VERSION}.${ClientLibrary.getLibraryExtension()}`;
     }
 
     /**
@@ -114,6 +114,22 @@ export class ClientLibrary {
                 break;
             default:
                 throw new FiskalyError("OS type not supported: " + platform);
+        }
+
+        return extension;
+    }
+
+    /**
+     * Get Library Prefix based on operating system
+     * only used for darwin
+     * @return {string}
+     */
+    private static getLibraryPrefix(): string {
+        const platform = ClientLibrary.osPlatform();
+        let extension = "";
+
+        if(platform == 'darwin') {
+            extension = "lib";
         }
 
         return extension;
