@@ -26,10 +26,6 @@ test('Create context method apiSecret parameter test', async () => {
     await expect(async () => {
         return await client.createContext(FISKALY_API_KEY, '', FISKALY_BASE_URL);
     }).rejects.toStrictEqual(new FiskalyError('apiSecret must be provided'));
-
-    await expect(async () => {
-        return await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, '');
-    }).rejects.toStrictEqual(new FiskalyError('baseUrl must be provided'));
 });
 
 test('Create context method baseUrl parameter test', async () => {
@@ -38,4 +34,12 @@ test('Create context method baseUrl parameter test', async () => {
     await expect(async () => {
         return await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, '');
     }).rejects.toStrictEqual(new FiskalyError('baseUrl must be provided'));
+});
+
+test('Create context method apiSecret parameter test', async () => {
+    const client = new FiskalyClient(FISKALY_SERVICE_URL);
+
+    await expect(async () => {
+        return await client.createContext('', '', FISKALY_BASE_URL, 'test@test.com', '');
+    }).rejects.toStrictEqual(new FiskalyError('password must be provided in combination with email'));
 });

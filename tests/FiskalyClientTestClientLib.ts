@@ -1,19 +1,21 @@
 import { FiskalyClient } from '../src/';
-import { ClientConfiguration, VersionResponse } from "../src/responses/";
-import { FiskalyHttpError } from "../src/errors";
+import { ClientConfiguration, VersionResponse, RequestResponse } from "../src/responses/";
+// @ts-ignore
+const uuid = require('uuid/v4');
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 import { SelfTestResponse } from '../src/responses/SelfTestResponse';
 
-let FISKALY_SERVICE_URL: string, FISKALY_API_KEY: string, FISKALY_API_SECRET: string, FISKALY_BASE_URL: string;
+let FISKALY_API_KEY: string, FISKALY_API_SECRET: string, FISKALY_BASE_URL: string, MANAGEMENT_BASE_URL: string, EMAIL: string, PASSWORD: string;
 
 beforeEach(() => {
-    // @ts-ignore
-    FISKALY_SERVICE_URL = null;
     FISKALY_API_KEY = process.env.FISKALY_API_KEY || '';
     FISKALY_API_SECRET= process.env.FISKALY_API_SECRET || '';
     FISKALY_BASE_URL = process.env.FISKALY_BASE_URL || '';
+    MANAGEMENT_BASE_URL = process.env.MANAGEMENT_BASE_URL || '';
+    EMAIL = process.env.EMAIL || '';
+    PASSWORD = process.env.PASSWORD || '';
 })
 
 test('Fiskaly Client Constructor', async () => {
@@ -85,24 +87,51 @@ test('Test request method', async () => {
     const client = new FiskalyClient();
     await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
 
+    const tssUUID = uuid();
+
     const requestParams = {
         method: 'PUT',
-        path: '/tss/ecb75169-680f-48d1-93b2-52cc10abb9f/tx/9cbe6566-e24c-42ac-97fe-6a0112fb3c6',
-        query: {
-            last_revision: '0'
-        },
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: 'eyJzdGF0ZSI6ICJBQ1RJVkUiLCJjbGllbnRfaWQiOiAiYTYyNzgwYjAtMTFiYi00MThhLTk3MzYtZjQ3Y2E5NzVlNTE1In0='
+        path: '/tss/' + tssUUID,
+        body: 'eyJkZXNjcmlwdGlvbiI6ICJjdXN0b20gZGVzY3JpcHRpb24iLCAic3RhdGUiOiAiSU5JVElBTElaRUQifQ=='
     }
 
-    await expect(client.request(requestParams)).rejects.toBeInstanceOf(FiskalyHttpError);
-
-    /*
-    await client.request(requestParams);
+    const response = await client.request(requestParams);
     expect(response).not.toBeNull();
     expect(response).not.toBeUndefined();
     expect(response).toBeInstanceOf(RequestResponse);
-    */
+})
+
+test('Test query array', async () => {
+    const client = new FiskalyClient();
+    await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
+
+    const requestParams = {
+        method: 'GET',
+        path: '/tss',
+        query: {
+            states: ["UNINITIALIZED"]
+        }
+    }
+
+    const response = await client.request(requestParams);
+    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
+    expect(response).toBeInstanceOf(RequestResponse);
+
+})
+
+test('Test Management API with email and password', async () => {
+    const client = new FiskalyClient();
+    
+    await client.createContext('', '', MANAGEMENT_BASE_URL, EMAIL, PASSWORD);
+    const requestParams = {
+        method: 'GET',
+        path: '/organizations'
+    }
+
+    const response = await client.request(requestParams);
+    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
+    expect(response).toBeInstanceOf(RequestResponse);
+    
 })

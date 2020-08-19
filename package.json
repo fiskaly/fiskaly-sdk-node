@@ -1,6 +1,6 @@
 {
   "name": "fiskaly-sdk-node",
-  "version": "1.2.0-1",
+  "version": "1.2.100",
   "description": "fiskaly Cloud-TSE SDK for Node.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -35,7 +35,8 @@
     "dotenv": "^8.2.0",
     "jest": "^26.0.1",
     "ts-jest": "^26.0.0",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.3",
+    "uuid": "3.3.2"
   },
   "files": [
     "lib/**/*"

@@ -53,25 +53,40 @@ export class FiskalyClient {
 
     /**
      * Create context
-     * @param {string} apiKey
-     * @param {string} apiSecret
-     * @param {string} baseUrl
+     * @param {string} apiKey | optional
+     * @param {string} apiSecret | optional
+     * @param {string} baseUrl | optional
+     * @param {string} email | optional
+     * @param {string} password | optional
+     * @param {string} organizationId | optional
+     * @param {string} environment | optional
      * @return Promise
      */
-    public async createContext (apiKey: string, apiSecret: string, baseUrl: string): Promise<any> {
-        if (!apiKey) {
-            throw new FiskalyError("apiKey must be provided");
-        }
-        if (!apiSecret) {
-            throw new FiskalyError("apiSecret must be provided");
+    public async createContext (apiKey?: string, apiSecret?: string, baseUrl?: string, email?: string, password?: string, organizationId?: string, environment?: string): Promise<any> {
+        if(!email) {
+            if (!apiKey) {
+                throw new FiskalyError("apiKey must be provided");
+            }
+            if (!apiSecret) {
+                throw new FiskalyError("apiSecret must be provided");
+            }
+        } else {
+            if (!password) {
+                throw new FiskalyError("password must be provided in combination with email")
+            }
         }
         if (!baseUrl) {
             throw new FiskalyError("baseUrl must be provided");
         }
+
         const contextParams = {
             'base_url': baseUrl,
             'api_key': apiKey,
             'api_secret': apiSecret,
+            'email': email || '',
+            'password': password || '',
+            'organization_id': organizationId || '',
+            'environment': environment || '',
             'sdk_version': version
         };
         const response = await this.doRequest('create-context', contextParams);
