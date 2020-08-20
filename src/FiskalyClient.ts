@@ -4,7 +4,12 @@ import { FiskalyErrorHandler, FiskalyError } from "./errors";
 import { ConfigureMethodParams, RequestMethodParams } from "./interfaces";
 import { ClientLibrary } from "./client/ClientLibrary";
 import {JSONRPCResultLike} from "jayson/promise";
-import { version } from '../package.json';
+import * as path from "path";
+import * as fs from "fs";
+
+
+const pkg = fs.readFileSync(path.join(__dirname, '../package.json'), { encoding: "utf-8" });
+const { version } = JSON.parse(pkg);
 
 export class FiskalyClient {
     private context: string | undefined;
@@ -25,7 +30,7 @@ export class FiskalyClient {
                 const lib = new ClientLibrary();
                 this.doRequestFn = lib.request.bind(lib);
             } catch (e) {
-                throw new FiskalyError("fiskalyServiceUrl must be provided");
+                throw new FiskalyError("Could not load fiskaly Client Library. Make sure that the library is present or use the fiskaly Service.");
             }
         } else {
             // @ts-ignore

@@ -4,7 +4,10 @@ import * as ffi from "ffi-napi";
 import * as ref from "ref-napi";
 import {FiskalyError} from "../errors";
 import * as path from "path";
-import { version } from '../../package.json';
+import * as fs from "fs";
+
+const pkg = fs.readFileSync(path.join(__dirname, '../../package.json'), { encoding: "utf-8" });
+const { version } = JSON.parse(pkg);
 
 export class ClientLibrary {
     private readonly LIB_PREFIX: string = "com.fiskaly.client";
