@@ -56,7 +56,7 @@ test('Test configure method', async () => {
     expect(config).toBeInstanceOf(ClientConfiguration);
 
     const configParams = {
-        debug_level: 4,
+        debug_level: 3,
         debug_file: '-',
         client_timeout: 5000,
         smaers_timeout: 2000,
@@ -118,6 +118,33 @@ test('Test Management API with email and password', async () => {
     const requestParams = {
         method: 'GET',
         path: '/organizations'
+    }
+
+    const response = await client.request(requestParams);
+    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
+    expect(response).toBeInstanceOf(RequestResponse);
+
+})
+
+test('Base64 Encoding for Body', async () => {
+    const client = new FiskalyClient(FISKALY_SERVICE_URL);
+
+    await client.createContext(FISKALY_API_KEY, FISKALY_API_SECRET, FISKALY_BASE_URL);
+
+    const jsonBody = {
+        state: 'UNINITIALIZED',
+        description: 'NodeJS Test TSS'
+    }
+
+    const body = Buffer.from(JSON.stringify(jsonBody)).toString('base64');
+
+    const tssUUID = uuid();
+
+    const requestParams = {
+        method: 'PUT',
+        path: '/tss/' + tssUUID,
+        body: body
     }
 
     const response = await client.request(requestParams);
