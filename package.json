@@ -1,6 +1,6 @@
 {
   "name": "fiskaly-sdk-node",
-  "version": "1.2.100",
+  "version": "1.2.101",
   "description": "fiskaly Cloud-TSE SDK for Node.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
