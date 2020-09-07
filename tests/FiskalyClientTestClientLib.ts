@@ -23,6 +23,11 @@ test('Fiskaly Client Constructor', async () => {
     expect(client).not.toBeNull();
 });
 
+test('fiskaly Client Constructor with Path', async () => {
+    const client = new FiskalyClient(undefined, "/tmp/");
+    expect(client).not.toBeNull();
+})
+
 test('Test get version request', async () => {
     const client = new FiskalyClient();
     const version = await client.getVersion();

@@ -18,9 +18,10 @@ export class ClientLibrary {
     /**
      * Client Library Constructor.
      */
-    constructor() {
+    constructor(fiskalyLibraryPath?: string) {
         try {
-            this.library = ffi.Library(path.join(__dirname, '/' + this.getLibraryName()), {
+            const libraryPath = (fiskalyLibraryPath != null && fiskalyLibraryPath.length > 0) ? fiskalyLibraryPath : __dirname;
+            this.library = ffi.Library(path.join(libraryPath, this.getLibraryName()), {
                 _fiskaly_client_invoke: ['char *', ['char *']],
                 _fiskaly_client_free: ['void', ['char *']],
             })

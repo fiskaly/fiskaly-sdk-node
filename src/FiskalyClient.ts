@@ -22,12 +22,12 @@ export class FiskalyClient {
      * @param {string} fiskalyServiceUrl | optional
      * @param {(method: string, params: object) => Promise<JSONRPCResultLike>} requestFunction | optional
      */
-    constructor(fiskalyServiceUrl?: string, requestFunction?: (method: string, params: object) => Promise<JSONRPCResultLike>) {
+    constructor(fiskalyServiceUrl?: string, fiskalyLibraryPath?: string, requestFunction?: (method: string, params: object) => Promise<JSONRPCResultLike>) {
         if (requestFunction) {
             this.doRequestFn = requestFunction;
         } else if (!fiskalyServiceUrl) {
             try {
-                const lib = new ClientLibrary();
+                const lib = new ClientLibrary(fiskalyLibraryPath);
                 this.doRequestFn = lib.request.bind(lib);
             } catch (e) {
                 throw new FiskalyError("Could not load fiskaly Client Library. Make sure that the library is present or use the fiskaly Service.");
